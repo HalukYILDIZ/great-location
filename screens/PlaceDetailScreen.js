@@ -13,7 +13,7 @@ const styles = StyleSheet.create({});
 
 export const screenOptions = navData => {
   return {
-    headerTitle: 'Places Detail',
+    headerTitle: navData.route.params.placeTitle,
     // headerLeft: () => (
     //   <HeaderButtons HeaderButtonComponent={HeaderButton}>
     //     <Item
