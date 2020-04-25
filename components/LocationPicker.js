@@ -4,22 +4,24 @@ import {
   Button,
   Text,
   ActivityIndicator,
-  StyleSheet,
   Alert,
+  StyleSheet,
 } from "react-native";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
+
 import Colors from "../constants/Colors";
 
 const LocationPicker = (props) => {
   const [isFetching, setIsFetching] = useState(false);
   const [pickedLocation, setPickedLocation] = useState();
+
   const verifyPermissions = async () => {
     const result = await Permissions.askAsync(Permissions.LOCATION);
     if (result.status !== "granted") {
       Alert.alert(
-        "Insufficent permissions!",
-        "You need to grant location permisions to use this app.",
+        "Insufficient permissions!",
+        "You need to grant location permissions to use this app.",
         [{ text: "Okay" }]
       );
       return false;
@@ -27,22 +29,26 @@ const LocationPicker = (props) => {
     return true;
   };
 
-  getLocationHandler = async () => {
+  const getLocationHandler = async () => {
     const hasPermission = await verifyPermissions();
     if (!hasPermission) {
       return;
     }
+
     try {
       setIsFetching(true);
       const location = await Location.getCurrentPositionAsync({
         timeout: 5000,
       });
       console.log(location);
-      setPickedLocation();
+      setPickedLocation({
+        lat: location.coords.latitude,
+        lng: location.coords.longitude,
+      });
     } catch (err) {
       Alert.alert(
         "Could not fetch location!",
-        "Please try again later or a pick a location on the map.",
+        "Please try again later or pick a location on the map.",
         [{ text: "Okay" }]
       );
     }
@@ -53,9 +59,9 @@ const LocationPicker = (props) => {
     <View style={styles.locationPicker}>
       <View style={styles.mapPreview}>
         {isFetching ? (
-          <ActivityIndicator size="larhe" color={Colors.primary} />
+          <ActivityIndicator size="large" color={Colors.primary} />
         ) : (
-          <Text>No location choosen yet!</Text>
+          <Text>No location chosen yet!</Text>
         )}
       </View>
       <Button
@@ -67,8 +73,6 @@ const LocationPicker = (props) => {
   );
 };
 
-export default LocationPicker;
-
 const styles = StyleSheet.create({
   locationPicker: {
     marginBottom: 15,
@@ -79,5 +83,9 @@ const styles = StyleSheet.create({
     height: 150,
     borderColor: "#ccc",
     borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
+
+export default LocationPicker;
