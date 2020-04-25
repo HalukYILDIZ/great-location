@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import { StyleSheet, Image, TouchableOpacity } from "react-native";
 import ENV from "../env";

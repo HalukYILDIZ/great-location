@@ -1,6 +1,15 @@
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
+/* eslint-disable react/display-name */
+/* eslint-disable react/prop-types */
+import React, { useState, useCallback, useEffect } from "react";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Platform,
+  Alert,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import Colors from "../constants/Colors";
 
 const MapScreen = (props) => {
   const [selectedLocation, setSelectedLocation] = useState();
@@ -17,6 +26,27 @@ const MapScreen = (props) => {
       lng: event.nativeEvent.coordinate.longitude,
     });
   };
+
+  const savePickedLocationHandler = useCallback(() => {
+    if (!selectedLocation) {
+      Alert.alert("You didnt picked location");
+      return;
+    }
+    props.navigation.navigate("NewPlace", { pickedLocation: selectedLocation });
+    console.log("ne gidiyo:" + selectedLocation);
+  }, [selectedLocation]);
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          style={styles.headerButton}
+          onPress={savePickedLocationHandler}
+        >
+          <Text style={styles.headerButtonText}>Save</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [savePickedLocationHandler]);
   let markerCoordinates;
   if (selectedLocation) {
     markerCoordinates = {
@@ -37,12 +67,6 @@ const MapScreen = (props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  map: {
-    flex: 1,
-  },
-});
-
 export const screenOptions = (navData) => {
   return {
     headerTitle: "Map",
@@ -57,18 +81,18 @@ export const screenOptions = (navData) => {
     //     />
     //   </HeaderButtons>
     // ),
-    // headerRight: () => (
-    //   <HeaderButtons HeaderButtonComponent={HeaderButton}>
-    //     <Item
-    //       title="Cart"
-    //       iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
-    //       onPress={() => {
-    //         navData.navigation.navigate('Cart');
-    //       }}
-    //   />
-    // </HeaderButtons>
-    // )
   };
 };
-
+const styles = StyleSheet.create({
+  map: {
+    flex: 1,
+  },
+  headerButton: {
+    marginHorizontal: 20,
+  },
+  headerButtonText: {
+    fontSize: 16,
+    color: Platform.OS === "android" ? "white" : Colors.primary,
+  },
+});
 export default MapScreen;
