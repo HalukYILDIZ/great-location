@@ -1,19 +1,51 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { StyleSheet } from "react-native";
+import MapView, { Marker } from "react-native-maps";
 
-const MapScreen = props => {
+const MapScreen = (props) => {
+  const [selectedLocation, setSelectedLocation] = useState();
+  const mapRegion = {
+    latitude: 37.78,
+    longitude: -122.43,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  };
+
+  const selectLocationhandler = (event) => {
+    setSelectedLocation({
+      lat: event.nativeEvent.coordinate.latitude,
+      lng: event.nativeEvent.coordinate.longitude,
+    });
+  };
+  let markerCoordinates;
+  if (selectedLocation) {
+    markerCoordinates = {
+      latitude: selectedLocation.lat,
+      longitude: selectedLocation.lng,
+    };
+  }
   return (
-    <View>
-      <Text>MapScreen</Text>
-    </View>
+    <MapView
+      style={styles.map}
+      region={mapRegion}
+      onPress={selectLocationhandler}
+    >
+      {markerCoordinates && (
+        <Marker title="Picked Location" coordinate={markerCoordinates}></Marker>
+      )}
+    </MapView>
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  map: {
+    flex: 1,
+  },
+});
 
-export const screenOptions = navData => {
+export const screenOptions = (navData) => {
   return {
-    headerTitle: 'Map',
+    headerTitle: "Map",
     // headerLeft: () => (
     //   <HeaderButtons HeaderButtonComponent={HeaderButton}>
     //     <Item
@@ -33,8 +65,8 @@ export const screenOptions = navData => {
     //       onPress={() => {
     //         navData.navigation.navigate('Cart');
     //       }}
-      //   />
-      // </HeaderButtons>
+    //   />
+    // </HeaderButtons>
     // )
   };
 };
