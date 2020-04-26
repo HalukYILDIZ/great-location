@@ -8,7 +8,10 @@ import * as Permissions from "expo-permissions";
 const ImageSelector = (props) => {
   const [pickedImage, setPickedImage] = useState();
   const verifyPermissions = async () => {
-    const result = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const result = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL,
+      Permissions.CAMERA
+    );
     if (result.status !== "granted") {
       Alert.alert(
         "Insufficent permissions!",
