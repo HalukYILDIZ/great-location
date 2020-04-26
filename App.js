@@ -13,7 +13,6 @@ init()
   })
   .catch((err) => {
     console.log("Initializing db Failed");
-    console.log(err);
   });
 
 const rootReducer = combineReducers({
